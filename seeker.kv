@@ -1,0 +1,168 @@
+#:include AZWidgets.kv
+
+# ---- TODO consolidate background, text colors etc.
+
+
+<Interface@BoxLayout>:
+
+    ui_target_filepath: target_filepath
+    ui_getresults_button: getresults_button
+    ui_saveresults_button: saveresults_button
+    ui_column_headings: column_headings
+    ui_results: results
+
+	orientation: 'vertical'
+	padding: 5
+	spacing: 5
+	font_size: 16
+	BoxLayout: #
+	    orientation: 'horizontal'
+		id: target_file
+		spacing: 5
+		size_hint: 1, None
+		height: 30
+
+        AZTextInput:
+            id: target_filepath
+            background_color: 0, 0, 0, 1
+            text_color: 1, 1, 1, 1
+            required_height: '30dp'
+            label_text: 'File:'
+            input_hint: '<file path here>'
+            size_hint: 1, None
+
+        AZButton:
+            id: choosefile_button
+            text: 'Choose...'
+            on_release: root.chooseFile()
+
+    BoxLayout: #
+        orientation: 'horizontal'
+        id: target
+        size_hint: 1, None
+        height: 30
+
+        AZTextInput:
+            id: target_value
+            background_color: 0, 0, 0, 1
+            text_color: 1, 1, 1, 1
+            required_height: '30dp'
+            label_text: 'Target:'
+            input_hint: '<target>'
+            size_hint: 1, None
+
+    BoxLayout: #
+        orientation: 'horizontal'
+        id: focus
+        size_hint: 1, None
+        height: '30dp'
+
+        AZCheckBox:
+            id: regex_checkbox
+            background_color: 0, 0, 0, 1
+            text_color: 1, 1, 1, 1
+            required_height: '30dp'
+            label_text: 'Regex:'
+
+        AZPlusMinusValue:
+            background_color: 0, 0, 0, 1
+            text_color: 1, 1, 1, 1
+            required_height: '30dp'
+            text:'Offset'
+
+        AZTextInput:
+            id: target_value
+            background_color: 0, 0, 0, 1
+            text_color: 1, 1, 1, 1
+            required_height: '30dp'
+            label_text: 'Length:'
+            input_hint: '<100>'
+            size_hint: 1, None
+
+#   Headers...
+
+    GridLayout:
+        canvas.before:
+            Color:
+                rgba: (1, 1, 1, .5)     # greyish...
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        id: column_headings
+        size_hint_x: 1
+        size_hint_y: None
+        height: dp(25)
+        spacing: 1, 1
+        cols: 3
+        cols_minimum: {0 :80, 1 : 80, 2 : (root.width - 2 * 80)}
+        col_force_default: True
+
+#   Data...
+
+    BoxLayout:
+        canvas.before:
+            Color:
+                rgba: (1, 1, 1, 1)   # all white now...
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        RecycleView:
+            id: results
+            viewclass: 'AZRecycleRow'
+            data:[{'c0': x[0][0], 'c1': x[1][0], 'c2': x[2][0], 'row':x[0][1]} for x in root.results]
+            do_scroll_x: False
+            do_scroll_y: True
+            scroll_type: ['bars']
+            bar_width: 25
+            bar_color: .7, .7, 0, .9
+            bar_inactive_color: .7, .7, 0, .2
+            always_overscroll: False
+            padding: 5, 5
+            SelectableRecycleGridLayout:
+                size_hint_x: 1
+                size_hint_y: None
+                spacing: 1, 1
+                cols: 1
+                key_selection: 'selectable'
+                default_size: None, dp(26)
+                default_size_hint: None, None
+                height: self.minimum_height
+                multiselect: False
+                touch_multiselect: False
+
+	BoxLayout: #
+	    orientation: 'horizontal'
+	    size_hint: 1, None
+	    height: 30
+
+        AnchorLayout:
+            size_hint: 1, 1
+            anchor_x: 'left'
+            anchor_y: 'bottom'
+
+            AZButton:
+                id: getresults_button
+                text: 'Search...'
+                on_release: root.getResults()
+
+        AnchorLayout:
+            size_hint: 1, 1
+            anchor_x: 'center'
+            anchor_y: 'bottom'
+
+            AZButton:
+                id: saveresults_button
+                text: 'Save...'
+                on_release: root.saveResults()
+
+        AnchorLayout:
+            size_hint: 1, 1
+            anchor_x: 'right'
+            anchor_y: 'bottom'
+
+            AZButton:
+                id: exitapp_button
+                text: 'Exit'
+                on_release: root.exitApp()

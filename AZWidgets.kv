@@ -1,0 +1,302 @@
+#:import window kivy.core.window.Window
+
+<AZLeftButton@Button>
+    halign: 'left'
+    valign: 'middle'
+    text_size: self.size
+
+<AZButton@Button>
+    background_color: (.4, .2, .7, 1)
+    halign: 'center'
+    valign: 'center'
+    font_name: 'Times.ttf'
+    font_size: 20
+    size_hint: None, None
+    size: 90,30
+
+<AZCheckBox@BoxLayout>
+    background_color: 1, 1, 1, 1
+    text_color: 0, 0, 0, 1
+    required_height: '30dp'
+    font_name: 'Times.ttf'
+    font_size: '20sp'
+    label_text: 'Option:'
+    checkbox_width: 20
+    active: False
+    the_checkbox: chkbox
+
+    canvas.before:
+        Color:
+            rgba: root.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    size_hint: None, None
+    height: self.required_height
+
+    Label:
+        text: root.label_text
+        font_name: root.font_name
+        font_size: root.font_size
+        color: root.text_color
+        size_hint: None, 1
+        text_size: None, None
+        size: self.texture_size
+        halign: 'center'
+        valign: 'center'
+        padding: 2, 2
+        on_texture_size: root.width = self.width + root.checkbox_width
+
+    CheckBox:
+        id: chkbox
+        color: root.text_color
+        size_hint: None, 1
+        width: root.checkbox_width
+        active: root.active
+
+<AZTextInput@BoxLayout>
+    background_color: 1, 1, 1, 1
+    text_color: 0, 0, 0, 1
+    required_height: '90dp'         # 2-digits exactly!
+    font_name: 'Times.ttf'
+    font_size: '20sp'               # 2-digits exactly!
+    label_text: 'Offset:'
+    label_width: 0
+#    input_width: 100
+    input_hint: 'Type away...'
+    the_outputtext: output_text
+
+    canvas.before:
+        Color:
+            rgba: root.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    orientation: 'horizontal'
+    size_hint: None, None
+    height: self.required_height
+
+#    on_label_width:
+#        self.width = self.label_width + self.input_width
+
+    Label:
+        text: root.label_text
+        font_name: root.font_name
+        font_size: root.font_size
+        color: root.text_color
+        size_hint: None, 1
+        text_size: None, None
+        size: self.texture_size
+        halign: 'center'
+        valign: 'center'
+        padding: 2, 2
+#        on_texture_size:
+#            root.label_width = self.width
+
+    TextInput:
+        id: output_text
+        font_name: root.font_name
+        font_size: root.font_size if int(root.required_height[0:2]) >= 1.5 * int(root.font_size[0:2]) else str(0.6*int(root.font_size[0:2]))+'sp'
+        border: 0, 3, 0, 3
+        padding: 0, 4, 4, 0
+        text: ''
+        hint_text: root.input_hint
+        halign: 'left'
+        valign: 'center'
+#        size_hint: None, 1
+#        width: root.input_width
+        size_hint: 1, 1
+        multiline: False
+
+<AZPlusMinusValue@BoxLayout>
+    background_color: 1, 1, 1, 1
+    text_color: 0, 0, 0, 1
+    required_height: '90dp'         # 2-digits exactly!
+    font_name: 'Times.ttf'
+    font_size: '20sp'               # 2-digits exactly!
+    label_text: 'Offset:'
+    label_width: 0
+    toggle_width: 0
+    input_digits: 3
+    input_width: 15*root.input_digits
+
+    canvas.before:
+        Color:
+            rgba: root.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    orientation: 'horizontal'
+    size_hint: None, None
+    height: self.required_height
+
+    on_toggle_width:
+        self.width = self.toggle_width + self.label_width + self.input_width
+
+    Label:
+        text: root.label_text
+        font_name: root.font_name
+        font_size: root.font_size
+        color: root.text_color
+        size_hint: None, 1
+        text_size: None, None
+        size: self.texture_size
+        halign: 'center'
+        valign: 'center'
+        padding: 2, 2
+        on_texture_size:
+            root.label_width = self.width
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: None, 1
+        padding: 2, 2, 2, 2
+        spacing: 2
+
+        ToggleButton:
+            group: 'delta'
+            allow_no_selection: False
+            border: 0, 0, 0, 0
+            background_normal: 'minus-inactive.png'
+            background_down: 'minus-active.png'
+            size_hint: None, .3
+            on_size:
+                self.width = self.height
+                self.parent.width = self.width + self.parent.padding[1]*2
+                root.toggle_width = self.parent.width
+
+        ToggleButton:
+            group: 'delta'
+            border: 0, 0, 0, 0
+            background_normal: 'plus-inactive.png'
+            background_down: 'plus-active.png'
+            size_hint: None, .3
+            state: 'down'
+            on_size:
+                self.width = self.height
+                self.parent.width = self.width + self.parent.padding[1]*2
+                root.toggle_width = self.parent.width
+
+    TextInput:
+        font_name: root.font_name
+        font_size: root.font_size if int(root.required_height[0:2]) >= 1.5 * int(root.font_size[0:2]) else str(0.6*int(root.font_size[0:2]))+'sp'
+        border: 0, 0, 0, 0
+        padding: 0, 4, 4, 0
+        text: ''
+        hint_text: '0'
+        halign: 'right'
+        valign: 'center'
+        input_filter: 'int'
+        size_hint: 1, 1
+        width: root.input_width
+        multiline: False
+        on_text:
+            digits = len(self.text)
+            if digits > root.input_digits: self.text = self.text[0:root.input_digits]
+
+<AZResourceChooser@BoxLayout>
+    background_color: 1, 1, 1, 1
+    required_height: '90dp'         # 2-digits exactly!
+    font_name: 'Times.ttf'
+    font_size: '20sp'               # 2-digits exactly!
+    button_color: 1, 1, 0, 1
+    button_font_color: 0, 0, 0, 1
+    button_text: 'Target File...'
+    button_width: 0
+    input_width: 400
+    input_hint: 'Choose or Type...'
+    spacing: 2
+
+    canvas.before:
+        Color:
+            rgba: root.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    orientation: 'horizontal'
+    size_hint: None, None
+    height: self.required_height
+
+    on_button_width:
+        self.width = self.button_width + self.input_width
+
+    Button:
+        text: root.button_text
+        font_name: root.font_name
+        font_size: root.font_size
+        background_color: root.button_color
+        color: root.button_font_color
+        size_hint: None, 1
+        text_size: None, None
+        size: self.texture_size
+        halign: 'center'
+        valign: 'center'
+        padding: 4, 4
+        on_texture_size:
+            root.button_width = self.width
+
+    TextInput:
+        font_name: root.font_name
+        font_size: root.font_size if int(root.required_height[0:2]) >= 1.5 * int(root.font_size[0:2]) else str(0.6*int(root.font_size[0:2]))+'sp'
+        border: 0, 3, 0, 3
+        padding: 0, 4, 4, 0
+        text: ''
+        hint_text: root.input_hint
+        halign: 'left'
+        valign: 'center'
+        size_hint: None, 1
+        width: root.input_width
+        multiline: False
+
+<AZRecycleRow@BoxLayout>:
+    canvas:
+        Color:
+            rgba: (1, 1, 1, 1)   # all white now...
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    orientation: 'horizontal'
+    size_hint: 1, None
+    height: dp(26)
+
+    c0: ''
+    c1: ''
+    c2: ''
+    row: 0
+
+    SelectableButton:
+        size_hint: None, None
+        height: dp(26)
+        width: 80
+        row: root.row
+        index: 3*root.row
+        col: 0
+        text: root.c0
+
+    SelectableButton:
+        size_hint: None, None
+        height: dp(26)
+        width: 80
+        row: root.row
+        index: 3*root.row + 1
+        col: 1
+        text: root.c1
+
+    # and with left-aligned text...
+    SelectableButton:
+        size_hint: None, None
+        height: dp(26)
+        width: window.size[0] - 2*80
+        row: root.row
+        index: 3*root.row + 2
+        col: 2
+        text: root.c2
+        halign: 'left'
+        valign: 'middle'
+        text_size: self.size
+
